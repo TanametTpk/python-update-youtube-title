@@ -194,10 +194,10 @@ if __name__ == '__main__':
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     scheduler = BackgroundScheduler() 
-    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=1)
+    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=5)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
     # Specify a hostname and port that are set as a valid redirect URI
     # for your API project in the Google API Console.
-    app.run('localhost', 8080, debug=True, use_reloader=False)
+    app.run('0.0.0.0', 8080, use_reloader=False)
