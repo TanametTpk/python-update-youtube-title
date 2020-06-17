@@ -3,5 +3,5 @@ requests
 apscheduler
 google-api-python-client
 google-auth-oauthlib
-oogle-auth-httplib2
+google-auth-httplib2
 gevent
