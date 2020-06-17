@@ -31,6 +31,13 @@ else:
     print("not found file name youtube_video_id.txt")
     exit()
 
+if os.path.exists("title.txt"):
+    f = open("title.txt")
+    CUSTOM_TITLE = f.readline()
+else:
+    print("not found file name youtube_video_id.txt")
+    exit()
+
 youtube = False
 
 def updateYoutube():
@@ -50,7 +57,7 @@ def updateYoutube():
         body={
             "id": ID,
             "snippet": {
-                "title": "คลิปนี้มี {} views | วิธีเปลี่ยนชื่อคลิปบน youtube แบบ realtime".format(views),
+                "title": CUSTOM_TITLE.format(views),
                 "description": description + "\n\nscript นี้สร้างโดยช่อง Techcast (กดติดตามที่ลิงค์นี้ได้เลย)\nhttps://bit.ly/3hvHVXH",
                 "categoryId": categoryId
             }
