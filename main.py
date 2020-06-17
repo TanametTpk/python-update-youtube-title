@@ -6,6 +6,7 @@ import requests
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 import time
+from gevent.pywsgi import WSGIServer
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -203,4 +204,6 @@ if __name__ == '__main__':
 
     # Specify a hostname and port that are set as a valid redirect URI
     # for your API project in the Google API Console.
-    app.run('0.0.0.0', 8080, debug=False, use_reloader=False)
+    print("server is running at port 8080")
+    http_server = WSGIServer(('', 8080), app)
+    http_server.serve_forever()
