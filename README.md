@@ -1,0 +1,11 @@
+# how to use
+- install python
+- download cadidatial json from google cloud
+- rename cadidatial file to cli_id.json
+- create file name youtube_video_id.txt and paste video id in it.
+- run command "pip install -r requirements.txt"
+- python main.py
+- open browser
+- go to http://localhost:8080
+- login
+- and IT's WORKKKKK
