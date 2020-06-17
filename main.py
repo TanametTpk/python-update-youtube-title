@@ -25,14 +25,14 @@ ID = ""
 CUSTOM_TITLE = "คลิปนี้มี {} วิว"
 
 if os.path.exists("youtube_video_id.txt"):
-    f = open("youtube_video_id.txt")
+    f = open("youtube_video_id.txt", encoding="utf-8")
     ID = f.readline()
 else:
     print("not found file name youtube_video_id.txt")
     exit()
 
 if os.path.exists("title.txt"):
-    f = open("title.txt")
+    f = open("title.txt", encoding="utf-8")
     CUSTOM_TITLE = f.readline()
 else:
     print("not found file name youtube_video_id.txt")
@@ -52,13 +52,16 @@ def updateYoutube():
     categoryId = video["items"][0]["snippet"]["categoryId"]
     description = video["items"][0]["snippet"]["description"]
 
+    if not "Techcast" in description:
+        description = description + "\n\nScript นี้สร้างโดยช่อง Techcast (กดติดตามที่ลิงค์นี้ได้เลย)\nhttps://bit.ly/3hvHVXH"
+
     request = youtube.videos().update(
         part="snippet",
         body={
             "id": ID,
             "snippet": {
                 "title": CUSTOM_TITLE.format(views),
-                "description": description + "\n\nscript นี้สร้างโดยช่อง Techcast (กดติดตามที่ลิงค์นี้ได้เลย)\nhttps://bit.ly/3hvHVXH",
+                "description": description,
                 "categoryId": categoryId
             }
         }
@@ -200,4 +203,4 @@ if __name__ == '__main__':
 
     # Specify a hostname and port that are set as a valid redirect URI
     # for your API project in the Google API Console.
-    app.run('0.0.0.0', 8080, use_reloader=False)
+    app.run('0.0.0.0', 8080, debug=False, use_reloader=False)
