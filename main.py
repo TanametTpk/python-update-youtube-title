@@ -22,6 +22,8 @@ app.secret_key = 'klfgag54a6__+++_+_=3(_^(+!_^(!+_^5g4fg.ag.algpa[];][;[4;[6;]2;
 
 isSchedulerRunning = False
 ID = ""
+CUSTOM_TITLE = "คลิปนี้มี {} วิว"
+
 if os.path.exists("youtube_video_id.txt"):
     f = open("youtube_video_id.txt")
     ID = f.readline()
@@ -49,7 +51,7 @@ def updateYoutube():
             "id": ID,
             "snippet": {
                 "title": "คลิปนี้มี {} views | วิธีเปลี่ยนชื่อคลิปบน youtube แบบ realtime".format(views),
-                "description": description + "\n\n script นี้สร้างโดยช่อง Techcast\nhttps://www.youtube.com/channel/UCZ1xUPnSDPRtz76nGNBcaIA",
+                "description": description + "\n\nscript นี้สร้างโดยช่อง Techcast (กดติดตามที่ลิงค์นี้ได้เลย)\nhttps://bit.ly/3hvHVXH",
                 "categoryId": categoryId
             }
         }
