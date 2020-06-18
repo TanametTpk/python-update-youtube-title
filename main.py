@@ -2,11 +2,13 @@
 
 import os
 import flask
+from flask import request
 import requests
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 import time
 from gevent.pywsgi import WSGIServer
+from werkzeug.utils import secure_filename
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -25,20 +27,6 @@ isSchedulerRunning = False
 ID = ""
 CUSTOM_TITLE = "คลิปนี้มี {} วิว"
 
-if os.path.exists("youtube_video_id.txt"):
-    f = open("youtube_video_id.txt", encoding="utf-8")
-    ID = f.readline()
-else:
-    print("not found file name youtube_video_id.txt")
-    exit()
-
-if os.path.exists("title.txt"):
-    f = open("title.txt", encoding="utf-8")
-    CUSTOM_TITLE = f.readline()
-else:
-    print("not found file name youtube_video_id.txt")
-    exit()
-
 youtube = False
 
 def updateYoutube():
@@ -46,6 +34,20 @@ def updateYoutube():
     if not youtube:
         print(ID)
         print("can not update, are you login yet?")
+        return
+
+    if os.path.exists("youtube_video_id.txt"):
+        f = open("youtube_video_id.txt", encoding="utf-8")
+        ID = f.readline()
+    else:
+        print("not found youtube_video_id")
+        return
+
+    if os.path.exists("title.txt"):
+        f = open("title.txt", encoding="utf-8")
+        CUSTOM_TITLE = f.readline()
+    else:
+        print("not found title")
         return
 
     video = youtube.videos().list(id = ID, part='snippet, id, statistics').execute()
@@ -74,6 +76,30 @@ def updateYoutube():
 def index():
     return print_index_table()
 
+@app.route('/uploader', methods = ['POST'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(secure_filename(CLIENT_SECRETS_FILE))
+        return 'file uploaded successfully'
+
+@app.route('/addTitle', methods = ['POST'])
+def addTitle():
+    if request.method == 'POST':
+        title = request.form.get("title")
+        f = open("title.txt", "w")
+        f.write(title)
+        f.close()
+        return 'add title successfully'
+
+@app.route('/addId', methods = ['POST'])
+def addId():
+    if request.method == 'POST':
+        id = request.form.get("clipid")
+        f = open("youtube_video_id.txt", "w")
+        f.write(id)
+        f.close()
+        return 'add clip id successfully'
 
 @app.route('/test')
 def test_api_request():
@@ -188,7 +214,22 @@ def print_index_table():
             '</td></tr>' +
             '<tr><td><a href="/clear">Clear Flask session credentials</a></td>' +
             '<td>Clear the access token (it\'s like logout)' +
-            '</td></tr></table>')
+            '</td></tr></table>' +
+            '<form action = "/uploader" method = "POST" enctype = "multipart/form-data">' +
+            '<h2>upload credidate</h2><input type = "file" name = "file" />' +
+            '<input type = "submit"/>' +
+            '</form>' +
+
+            '<form action = "/addTitle" method = "POST" >' +
+            '<h2>Title</h2><input type = "text" name = "title" />' +
+            '<input type = "submit"/>' +
+            '</form>' + 
+
+            '<form action = "/addId" method = "POST" >' +
+            '<h2>Youtube clip id</h2><input type = "text" name = "clipid" />' +
+            '<input type = "submit"/>' +
+            '</form>'
+            )
 
 
 if __name__ == '__main__':
