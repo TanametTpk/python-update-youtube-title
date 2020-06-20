@@ -243,7 +243,7 @@ if __name__ == '__main__':
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     scheduler = BackgroundScheduler() 
-    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=5)
+    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=8)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
