@@ -31,6 +31,8 @@ youtube = False
 
 def updateYoutube():
 
+    global ID
+
     if not youtube:
         print(ID)
         print("can not update, are you login yet?")
@@ -54,6 +56,7 @@ def updateYoutube():
     views = video["items"][0]["statistics"]["viewCount"]
     categoryId = video["items"][0]["snippet"]["categoryId"]
     description = video["items"][0]["snippet"]["description"]
+    tags = video["items"][0]["snippet"]["tags"]
 
     if not "Techcast" in description:
         description = description + "\n\nScript นี้สร้างโดยช่อง Techcast (กดติดตามที่ลิงค์นี้ได้เลย)\nhttps://bit.ly/3hvHVXH"
@@ -65,7 +68,8 @@ def updateYoutube():
             "snippet": {
                 "title": CUSTOM_TITLE.format(views),
                 "description": description,
-                "categoryId": categoryId
+                "categoryId": categoryId,
+                "tags":tags
             }
         }
     )
