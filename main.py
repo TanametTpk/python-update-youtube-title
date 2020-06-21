@@ -91,7 +91,8 @@ def upload_file():
 def addTitle():
     if request.method == 'POST':
         title = request.form.get("title")
-        f = open("title.txt", "w")
+        print(title)
+        f = open("title.txt", "w", encoding="utf-8")
         f.write(title)
         f.close()
         return 'add title successfully'
@@ -100,7 +101,7 @@ def addTitle():
 def addId():
     if request.method == 'POST':
         id = request.form.get("clipid")
-        f = open("youtube_video_id.txt", "w")
+        f = open("youtube_video_id.txt", "w", encoding="utf-8")
         f.write(id)
         f.close()
         return 'add clip id successfully'
@@ -243,7 +244,7 @@ if __name__ == '__main__':
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     scheduler = BackgroundScheduler() 
-    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=8)
+    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=1)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
