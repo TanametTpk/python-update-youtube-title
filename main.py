@@ -27,7 +27,44 @@ isSchedulerRunning = False
 ID = ""
 CUSTOM_TITLE = "คลิปนี้มี {} วิว"
 
+cred = False
+
 youtube = False
+
+def refreshToken(client_id, client_secret, refresh_token):
+    params = {
+            "grant_type": "refresh_token",
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "refresh_token": refresh_token
+    }
+
+    authorization_url = "https://www.googleapis.com/oauth2/v4/token"
+
+    r = requests.post(authorization_url, data=params)
+
+    if r.ok:
+        return r.json()['access_token']
+    else:
+        return None
+
+def refresh_api():
+    global cred
+
+    if not cred:
+        return
+
+    # Call refreshToken which creates a new Access Token
+    access_token = refreshToken(cred.client_id, cred.client_secret, cred.refresh_token)
+
+    # Pass the new Access Token to Credentials() to create new credentials
+    credentials = google.oauth2.credentials.Credentials(access_token)
+
+    cred = credentials
+
+    global youtube
+    youtube = googleapiclient.discovery.build(
+            API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
 def updateYoutube():
 
@@ -76,9 +113,31 @@ def updateYoutube():
 
     response = request.execute()
 
+    refresh_api()
+
 @app.route('/')
 def index():
     return print_index_table()
+
+@app.route("/new")
+def new():
+
+    # global cred
+
+    # if not cred:
+    #     return "not found auth"
+
+    # # Call refreshToken which creates a new Access Token
+    # access_token = refreshToken(cred.client_id, cred.client_secret, cred.refresh_token)
+
+    # # Pass the new Access Token to Credentials() to create new credentials
+    # credentials = google.oauth2.credentials.Credentials(access_token)
+
+    # cred = credentials
+
+    # return credentials.token
+    refresh_api()
+    return "success"
 
 @app.route('/uploader', methods = ['POST'])
 def upload_file():
@@ -166,6 +225,9 @@ def oauth2callback():
     #              credentials in a persistent database instead.
     credentials = flow.credentials
     flask.session['credentials'] = credentials_to_dict(credentials)
+
+    global cred
+    cred = credentials
 
     return flask.redirect(flask.url_for('test_api_request'))
 
