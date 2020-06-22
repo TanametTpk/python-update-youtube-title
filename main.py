@@ -69,6 +69,7 @@ def refresh_api():
 def updateYoutube():
 
     global ID
+    global youtube
 
     if not youtube:
         print(ID)
@@ -88,6 +89,8 @@ def updateYoutube():
     else:
         print("not found title")
         return
+
+    refresh_api()
 
     video = youtube.videos().list(id = ID, part='snippet, id, statistics').execute()
     views = video["items"][0]["statistics"]["viewCount"]
@@ -113,7 +116,7 @@ def updateYoutube():
 
     response = request.execute()
 
-    refresh_api()
+    # refresh_api()
 
 @app.route('/')
 def index():
@@ -306,7 +309,7 @@ if __name__ == '__main__':
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     scheduler = BackgroundScheduler() 
-    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=8)
+    scheduler.add_job(func=updateYoutube, trigger="interval", minutes=1)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
