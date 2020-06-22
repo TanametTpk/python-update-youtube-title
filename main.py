@@ -60,11 +60,20 @@ def refresh_api():
     # Pass the new Access Token to Credentials() to create new credentials
     credentials = google.oauth2.credentials.Credentials(access_token)
 
-    cred = credentials
+    cred.token = credentials.token
+
+    # {'token': credentials.token,
+    #         'refresh_token': credentials.refresh_token,
+    #         'token_uri': credentials.token_uri,
+    #         'client_id': credentials.client_id,
+    #         'client_secret': credentials.client_secret,
+    #         'scopes': credentials.scopes}
+
+    # print(credentials_to_dict(cred))
 
     global youtube
     youtube = googleapiclient.discovery.build(
-            API_SERVICE_NAME, API_VERSION, credentials=credentials)
+            API_SERVICE_NAME, API_VERSION, credentials=cred)
 
 def updateYoutube():
 
@@ -90,8 +99,6 @@ def updateYoutube():
         print("not found title")
         return
 
-    refresh_api()
-
     video = youtube.videos().list(id = ID, part='snippet, id, statistics').execute()
     views = video["items"][0]["statistics"]["viewCount"]
     categoryId = video["items"][0]["snippet"]["categoryId"]
@@ -116,7 +123,7 @@ def updateYoutube():
 
     response = request.execute()
 
-    # refresh_api()
+    refresh_api()
 
 @app.route('/')
 def index():
